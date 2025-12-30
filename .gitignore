@@ -1,0 +1,69 @@
+# --------------------
+# Dependencies
+# --------------------
+node_modules/
+.pnp/
+.pnp.js
+
+# --------------------
+# Build output
+# --------------------
+.next/
+dist/
+out/
+build/
+
+# --------------------
+# pnpm
+# --------------------
+.pnpm-debug.log*
+pnpm-lock.yaml
+.pnpm-store/
+
+# --------------------
+# Logs
+# --------------------
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --------------------
+# Environment variables
+# --------------------
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# --------------------
+# OS / Editor
+# --------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --------------------
+# TypeScript
+# --------------------
+*.tsbuildinfo
+
+# --------------------
+# Turborepo / Cache
+# --------------------
+.turbo/
+.cache/
+
+# --------------------
+# CLI / Temp artifacts
+# --------------------
+tmp/
+temp/
+my-test-app/
+my-app/
