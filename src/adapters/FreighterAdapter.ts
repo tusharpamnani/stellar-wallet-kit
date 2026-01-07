@@ -1,5 +1,3 @@
-// src/adapters/FreighterAdapter.ts
-
 import {
   isConnected,
   isAllowed,

@@ -1,5 +1,3 @@
-// src/index.ts
-
 // Context and Provider
 export { WalletProvider, useWallet } from './context/WalletContext';
 

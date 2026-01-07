@@ -1,5 +1,3 @@
-// src/context/WalletContext.tsx
-
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, PropsWithChildren } from 'react';
 import {
   WalletType,

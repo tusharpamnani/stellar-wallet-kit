@@ -1,5 +1,3 @@
-// src/types/index.ts
-
 export enum WalletType {
   FREIGHTER = 'freighter',
   // Add more wallet types as needed

@@ -1,5 +1,3 @@
-// src/components/WalletModal.tsx
-
 import React, { useEffect } from 'react';
 import type { ModalProps } from '../types';
 

@@ -1,5 +1,3 @@
-// src/components/ConnectButton.tsx
-
 import React, { useState } from 'react';
 import { useWallet } from '../context/WalletContext';
 import { WalletModal } from './WalletModal';

@@ -1,5 +1,3 @@
-// src/utils/balanceUtils.ts
-
 import type { AccountBalance, NetworkType } from '../types';
 
 interface HorizonBalanceRecord {
