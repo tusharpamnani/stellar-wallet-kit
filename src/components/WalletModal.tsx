@@ -10,242 +10,173 @@ export function WalletModal({
   appName = 'Your App',
   appIcon,
 }: ModalProps) {
-  // Handle ESC key
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
+    const onEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
-    
+
     if (isOpen) {
-      document.addEventListener('keydown', handleEsc);
+      document.addEventListener('keydown', onEsc);
       document.body.style.overflow = 'hidden';
     }
-    
+
     return () => {
-      document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', onEsc);
+      document.body.style.overflow = 'auto';
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  const themeMode = theme?.mode || 'light';
-  const isDark = themeMode === 'dark' || (themeMode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const isDark =
+    theme?.mode === 'dark' ||
+    (theme?.mode === 'auto' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-  const styles = {
-    overlay: {
-      position: 'fixed' as const,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: theme?.overlayBackground || (isDark ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)'),
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 9999,
-      animation: 'swk-fade-in 0.2s ease-out',
-    },
-    modal: {
-      backgroundColor: theme?.modalBackground || (isDark ? '#1a1a1a' : '#ffffff'),
-      borderRadius: theme?.borderRadius || '16px',
-      padding: '24px',
-      maxWidth: '420px',
-      width: '90%',
-      maxHeight: '80vh',
-      overflowY: 'auto' as const,
-      boxShadow: isDark ? '0 8px 32px rgba(0, 0, 0, 0.4)' : '0 8px 32px rgba(0, 0, 0, 0.1)',
-      animation: 'swk-slide-up 0.3s ease-out',
-      fontFamily: theme?.fontFamily || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    },
-    header: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: '24px',
-    },
-    title: {
-      fontSize: '20px',
-      fontWeight: 600,
-      color: theme?.textColor || (isDark ? '#ffffff' : '#000000'),
-      margin: 0,
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-    },
-    closeButton: {
-      background: 'none',
-      border: 'none',
-      fontSize: '24px',
-      cursor: 'pointer',
-      padding: '4px',
-      color: theme?.textColor || (isDark ? '#888888' : '#666666'),
-      transition: 'color 0.2s',
-      lineHeight: 1,
-    },
-    walletList: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: '12px',
-    },
-    walletButton: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '16px',
-      padding: '16px',
-      border: `1px solid ${isDark ? '#333333' : '#e5e5e5'}`,
-      borderRadius: theme?.borderRadius || '12px',
-      background: 'none',
-      cursor: 'pointer',
-      transition: 'all 0.2s',
-      width: '100%',
-      textAlign: 'left' as const,
-      fontFamily: 'inherit',
-    },
-    walletIcon: {
-      width: '40px',
-      height: '40px',
-      borderRadius: '8px',
-      flexShrink: 0,
-    },
-    walletInfo: {
-      flex: 1,
-    },
-    walletName: {
-      fontSize: '16px',
-      fontWeight: 500,
-      color: theme?.textColor || (isDark ? '#ffffff' : '#000000'),
-      margin: 0,
-      marginBottom: '4px',
-    },
-    walletDescription: {
-      fontSize: '13px',
-      color: theme?.textColor || (isDark ? '#888888' : '#666666'),
-      margin: 0,
-    },
-    badge: {
-      padding: '4px 8px',
-      borderRadius: '6px',
-      fontSize: '12px',
-      fontWeight: 500,
-      flexShrink: 0,
-    },
-    installedBadge: {
-      backgroundColor: theme?.primaryColor || (isDark ? '#4CAF50' : '#4CAF50'),
-      color: '#ffffff',
-    },
-    notInstalledBadge: {
-      backgroundColor: isDark ? '#333333' : '#f0f0f0',
-      color: isDark ? '#888888' : '#666666',
-    },
-    footer: {
-      marginTop: '24px',
-      paddingTop: '16px',
-      borderTop: `1px solid ${isDark ? '#333333' : '#e5e5e5'}`,
-      fontSize: '13px',
-      color: isDark ? '#888888' : '#666666',
-      textAlign: 'center' as const,
-    },
-    link: {
-      color: theme?.primaryColor || '#8b5cf6',
-      textDecoration: 'none',
-    },
-  };
-
-  const handleWalletClick = (wallet: any) => {
-    if (wallet.installed) {
-      onSelectWallet(wallet.id);
-    } else if (wallet.downloadUrl) {
-      window.open(wallet.downloadUrl, '_blank');
-    }
-  };
+  const bg = theme?.modalBackground || (isDark ? '#0f0f11' : '#ffffff');
+  const text = theme?.textColor || (isDark ? '#ffffff' : '#0a0a0a');
+  const muted = isDark ? '#8b8b8b' : '#6b6b6b';
+  const border = isDark ? '#1f1f23' : '#eaeaea';
+  const hover = theme?.buttonHoverColor || (isDark ? '#1a1a1f' : '#f6f6f6');
 
   return (
     <>
       <style>{`
-        @keyframes swk-fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
+        .swk-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.55);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
         }
-        @keyframes swk-slide-up {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+
+        .swk-modal {
+          width: 420px;
+          max-width: 92vw;
+          background: ${bg};
+          border-radius: 20px;
+          padding: 28px;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+          font-family: ${theme?.fontFamily || 'Inter, system-ui, sans-serif'};
         }
-        .swk-wallet-button:hover {
-          background-color: ${theme?.buttonHoverColor || (isDark ? '#252525' : '#f5f5f5')} !important;
-          border-color: ${theme?.primaryColor || '#8b5cf6'} !important;
+
+        .swk-wallet {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          padding: 14px 16px;
+          border-radius: 14px;
+          cursor: pointer;
+          transition: background 0.15s ease;
         }
-        .swk-close-button:hover {
-          color: ${theme?.primaryColor || '#8b5cf6'} !important;
+
+        .swk-wallet:hover {
+          background: ${hover};
+        }
+
+        .swk-pill {
+          font-size: 12px;
+          padding: 4px 10px;
+          border-radius: 999px;
+          background: ${theme?.primaryColor || '#6c5ce7'};
+          color: white;
+          font-weight: 500;
         }
       `}</style>
-      <div style={styles.overlay} onClick={onClose}>
-        <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-          <div style={styles.header}>
-            <h2 style={styles.title}>
-              {appIcon && <img src={appIcon} alt="" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />}
-              Connect Wallet
-            </h2>
-            <button
-              className="swk-close-button"
-              style={styles.closeButton}
-              onClick={onClose}
-              aria-label="Close modal"
+
+      <div className="swk-overlay" onClick={onClose}>
+        <div className="swk-modal" onClick={(e) => e.stopPropagation()}>
+          {/* Header */}
+          <div style={{ marginBottom: 24 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                marginBottom: 8,
+              }}
             >
-              ×
-            </button>
+              {appIcon && (
+                <img
+                  src={appIcon}
+                  alt=""
+                  style={{ width: 32, height: 32, borderRadius: 8 }}
+                />
+              )}
+              <span style={{ color: muted, fontSize: 14 }}>
+                Log in or sign up
+              </span>
+            </div>
+
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 22,
+                fontWeight: 600,
+                color: text,
+              }}
+            >
+              {appName}
+            </h2>
           </div>
 
-          <div style={styles.walletList}>
-            {wallets.map((wallet) => (
-              <button
+          {/* Wallet list */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {wallets.map((wallet, i) => (
+              <div
                 key={wallet.id}
-                className="swk-wallet-button"
-                style={styles.walletButton}
-                onClick={() => handleWalletClick(wallet)}
-                disabled={!wallet.installed && !wallet.downloadUrl}
+                className="swk-wallet"
+                onClick={() => onSelectWallet(wallet.id)}
               >
                 <img
                   src={wallet.icon}
-                  alt={`${wallet.name} icon`}
-                  style={styles.walletIcon}
+                  alt={wallet.name}
+                  style={{ width: 36, height: 36, borderRadius: 10 }}
                 />
-                <div style={styles.walletInfo}>
-                  <p style={styles.walletName}>{wallet.name}</p>
+
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 500,
+                      color: text,
+                    }}
+                  >
+                    {wallet.name}
+                  </div>
+
                   {wallet.description && (
-                    <p style={styles.walletDescription}>{wallet.description}</p>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: muted,
+                        marginTop: 2,
+                      }}
+                    >
+                      {wallet.description}
+                    </div>
                   )}
                 </div>
-                <div
-                  style={{
-                    ...styles.badge,
-                    ...(wallet.installed ? styles.installedBadge : styles.notInstalledBadge),
-                  }}
-                >
-                  {wallet.installed ? 'Installed' : 'Get'}
-                </div>
-              </button>
+
+                {i === 0 && <div className="swk-pill">Recent</div>}
+              </div>
             ))}
           </div>
 
-          <div style={styles.footer}>
-            <p style={{ margin: 0 }}>
-              Don't have a wallet?{' '}
-              <a
-                href="https://www.stellar.org/ecosystem/projects#wallets"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.link}
-              >
-                Learn more
-              </a>
-            </p>
+          {/* Footer */}
+          <div
+            style={{
+              marginTop: 24,
+              paddingTop: 16,
+              borderTop: `1px solid ${border}`,
+              textAlign: 'center',
+              fontSize: 13,
+              color: muted,
+            }}
+          >
+            Powered by Stellar Wallet Kit
           </div>
         </div>
       </div>
