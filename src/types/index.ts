@@ -1,15 +1,14 @@
 export enum WalletType {
-  FREIGHTER = 'freighter',
-  // Add more wallet types as needed
+  FREIGHTER = "freighter",
+  ALBEDO = "albedo",
   // XBULL = 'xbull',
-  // ALBEDO = 'albedo',
 }
 
 export enum NetworkType {
-  PUBLIC = 'PUBLIC',
-  TESTNET = 'TESTNET',
-  FUTURENET = 'FUTURENET',
-  STANDALONE = 'STANDALONE',
+  PUBLIC = "PUBLIC",
+  TESTNET = "TESTNET",
+  FUTURENET = "FUTURENET",
+  STANDALONE = "STANDALONE",
 }
 
 export interface WalletAccount {
@@ -38,8 +37,22 @@ export interface WalletInfo {
   name: string;
   icon: string;
   description?: string;
+
+  /** true = ready to use (installed OR web wallet) */
   installed: boolean;
+
+  /** Optional install link (extensions only) */
   downloadUrl?: string;
+
+  /** NEW: wallet delivery model */
+  kind?: WalletKind;
+
+  /** NEW: capability flags (future-proof) */
+  capabilities?: {
+    silentReconnect?: boolean;
+    networkDetection?: boolean;
+    authEntrySigning?: boolean;
+  };
 }
 
 export interface ConnectWalletResponse {
@@ -62,8 +75,14 @@ export interface WalletAdapter {
   disconnect(): Promise<void>;
   getPublicKey(): Promise<string | null>;
   getNetwork(): Promise<string>;
-  signTransaction(xdr: string, options?: SignTransactionOptions): Promise<SignTransactionResponse>;
-  signAuthEntry(entryXdr: string, options?: SignAuthEntryOptions): Promise<SignAuthEntryResponse>;
+  signTransaction(
+    xdr: string,
+    options?: SignTransactionOptions
+  ): Promise<SignTransactionResponse>;
+  signAuthEntry(
+    entryXdr: string,
+    options?: SignAuthEntryOptions
+  ): Promise<SignAuthEntryResponse>;
 }
 
 export interface SignTransactionOptions {
@@ -86,7 +105,7 @@ export interface StellarWalletKitConfig {
 }
 
 export interface WalletTheme {
-  mode?: 'light' | 'dark' | 'auto';
+  mode?: "light" | "dark" | "auto";
   primaryColor?: string;
   backgroundColor?: string;
   borderRadius?: string;
@@ -116,10 +135,23 @@ export interface WalletContextValue {
   selectedWallet: WalletType | null;
   connect: (walletType?: WalletType) => Promise<void>;
   disconnect: () => Promise<void>;
-  signTransaction: (xdr: string, options?: SignTransactionOptions) => Promise<SignTransactionResponse>;
-  signAuthEntry: (entryXdr: string, options?: SignAuthEntryOptions) => Promise<SignAuthEntryResponse>;
+  signTransaction: (
+    xdr: string,
+    options?: SignTransactionOptions
+  ) => Promise<SignTransactionResponse>;
+  signAuthEntry: (
+    entryXdr: string,
+    options?: SignAuthEntryOptions
+  ) => Promise<SignAuthEntryResponse>;
   switchNetwork: (network: NetworkType) => Promise<void>;
   availableWallets: WalletInfo[];
   refreshBalances: () => Promise<void>;
   isLoadingBalances: boolean;
+  supports: {
+    silentReconnect: boolean;
+    networkDetection: boolean;
+    authEntrySigning: boolean;
+  };
 }
+
+export type WalletKind = "extension" | "web";
