@@ -15,6 +15,7 @@ export default function Home() {
     network,
     isLoadingBalances,
     refreshBalances,
+    connectingWallet
   } = useWallet();
 
   const nativeBalance = account?.balances
@@ -87,8 +88,8 @@ export default function Home() {
                 marginBottom: 28,
               }}
             >
-              Securely connect a Stellar wallet to continue.
-              No approvals happen without your confirmation.
+              Securely connect a Stellar wallet to continue. No approvals happen
+              without your confirmation.
             </p>
 
             <div style={{ marginBottom: 24 }}>
@@ -101,7 +102,7 @@ export default function Home() {
                 color: "rgba(255,255,255,0.45)",
               }}
             >
-              Supports Freighter & Albedo
+              Supports Freighter, Albedo & WalletConnect
             </div>
           </div>
         ) : (
@@ -135,9 +136,7 @@ export default function Home() {
                   letterSpacing: "-1px",
                 }}
               >
-                {isLoadingBalances
-                  ? "—"
-                  : formatBalance(nativeBalance, 2)}{" "}
+                {isLoadingBalances ? "—" : formatBalance(nativeBalance, 2)}{" "}
                 <span
                   style={{
                     fontSize: 16,
@@ -204,7 +203,7 @@ export default function Home() {
       </footer>
 
       {/* Connecting overlay */}
-      {isConnecting && (
+      {isConnecting && connectingWallet !== "walletconnect" && (
         <div
           style={{
             position: "fixed",

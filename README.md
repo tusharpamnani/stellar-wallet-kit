@@ -1,7 +1,7 @@
 # 🌟 Stellar Wallet Kit
 
-A comprehensive, production-ready wallet connection SDK for Stellar dApps.  
-Built with TypeScript and React, inspired by RainbowKit.
+A **production-ready wallet connection SDK** for Stellar dApps.
+Built with **TypeScript + React**, inspired by RainbowKit — but designed for the **realities of Stellar wallets**.
 
 [![npm version](https://img.shields.io/npm/v/stellar-wallet-kit.svg)](https://www.npmjs.com/package/stellar-wallet-kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,17 +11,21 @@ Built with TypeScript and React, inspired by RainbowKit.
 
 ## ✨ Features
 
-- 🔌 **Multiple Wallet Support** – Freighter & Albedo
-- 🎨 **Fully Customizable UI** – Theme control to match your brand
-- ⚡ **TypeScript First** – Full type safety & IntelliSense
-- 🎯 **React Hooks API** – Simple `useWallet()` hook
-- 💰 **Built-in Balance Fetching**
-- 💾 **Auto-reconnect** (extension wallets)
-- 🌓 **Light / Dark / Auto theme**
-- 🔄 **Auto-refresh balances**
-- 🚀 **Framework-agnostic SDK**
-- 📱 **Next.js compatible**
-- 🎪 **Beautiful Wallet Modal**
+* 🔌 **Multiple Wallets**
+
+  * Freighter (extension)
+  * Albedo (web popup)
+  * WalletConnect (mobile wallets)
+  * LOBSTR (via WalletConnect)
+* 🎨 **Customizable Wallet Modal**
+* ⚡ **TypeScript-first**
+* 🎯 **React Hooks API**
+* 💰 **Built-in balance fetching**
+* 💾 **Session persistence**
+* 🌓 **Light / Dark / Auto theme**
+* 🔄 **Auto-refresh balances**
+* 📱 **Next.js (App Router & Pages) compatible**
+* 🚀 **Framework-agnostic core**
 
 ---
 
@@ -33,7 +37,7 @@ npm install stellar-wallet-kit
 yarn add stellar-wallet-kit
 # or
 pnpm add stellar-wallet-kit
-````
+```
 
 ---
 
@@ -66,7 +70,7 @@ export function App() {
 import { ConnectButton } from 'stellar-wallet-kit';
 
 export function Header() {
-  return <ConnectButton showBalance />;
+  return <ConnectButton />;
 }
 ```
 
@@ -80,9 +84,7 @@ import { useWallet } from 'stellar-wallet-kit';
 function Dashboard() {
   const { account, isConnected, signTransaction } = useWallet();
 
-  if (!isConnected) {
-    return <p>Please connect your wallet</p>;
-  }
+  if (!isConnected) return <p>Please connect your wallet</p>;
 
   return (
     <div>
@@ -99,72 +101,70 @@ function Dashboard() {
 
 ## 🔌 Supported Wallets
 
-| Wallet        | Type              | Auto-Reconnect |
-| ------------- | ----------------- | -------------- |
-| **Freighter** | Browser extension | ✅              |
-| **Albedo**    | Web-based (popup) | ❌              |
+| Wallet            | Type              | Connection Model       | Auto-Reconnect |
+| ----------------- | ----------------- | ---------------------- | -------------- |
+| **Freighter**     | Browser extension | Injected API           | ✅              |
+| **Albedo**        | Web wallet        | Popup + callback       | ❌              |
+| **WalletConnect** | Mobile wallets    | QR / deep-link session | ✅              |
+| **LOBSTR**        | Mobile wallet     | WalletConnect          | ✅              |
+
+> **LOBSTR is exposed separately in the UI** but internally uses WalletConnect.
 
 ---
 
-## 🌐 Albedo Wallet Integration (Important)
+## 🔗 WalletConnect & LOBSTR (Important)
 
-Albedo is a **web-based wallet**, not a browser extension.
+WalletConnect **does not block the UI** like extensions.
 
-Because of this, it **cannot inject APIs** into your app and **requires a callback route** to return results.
+* QR modal stays visible
+* SDK tracks `connectingWallet`
+* Global loaders **do not cover** WalletConnect
 
-This is **intentional and secure by design**.
-
----
-
-### 🧠 How Albedo Works
-
-1. Your app opens Albedo in a popup
-2. User approves the action in Albedo
-3. Albedo redirects the popup to a callback URL
-4. The callback sends data back to your app
-5. The popup closes and the wallet is connected
-
-If the callback route is missing, **Albedo will open but never connect**.
+This avoids the “QR hidden behind loader” problem by design.
 
 ---
 
-## ⚠️ Required: Add an Albedo Callback Route (App-side)
-
-Because this SDK is **framework-agnostic**, it **cannot create routes for you**.
-
-Your app **must define** a callback route.
-
----
-
-### Example: Next.js (Pages Router)
+### Connecting explicitly
 
 ```tsx
-// pages/albedo-callback.tsx
-import { useEffect } from 'react';
+import { WalletType, useWallet } from 'stellar-wallet-kit';
 
-export default function AlbedoCallback() {
-  useEffect(() => {
-    const params = Object.fromEntries(
-      new URLSearchParams(window.location.search)
-    );
+const { connect } = useWallet();
 
-    if (window.opener) {
-      window.opener.postMessage(
-        { type: 'ALBEDO_RESULT', payload: params },
-        window.location.origin
-      );
-    }
-
-    window.close();
-  }, []);
-
-  return <p>Connecting wallet…</p>;
-}
+await connect(WalletType.WALLETCONNECT);
+await connect(WalletType.LOBSTR);
 ```
 
 ---
 
-### Example: Next.js (App Router)
+## 🌐 Albedo Wallet Integration (Required)
+
+Albedo is a **web-based wallet** and **requires a callback route**.
+
+If the callback is missing:
+
+* Albedo opens
+* User approves
+* **Connection never completes**
+
+This is expected behavior.
+
+---
+
+### How Albedo Works
+
+1. App opens Albedo popup
+2. User approves
+3. Albedo redirects to callback URL
+4. Callback posts message to opener
+5. Popup closes
+6. Wallet connects
+
+---
+
+### Required: Add a Callback Route
+
+#### Next.js (App Router)
 
 ```tsx
 // app/albedo-callback/page.tsx
@@ -190,43 +190,6 @@ export default function AlbedoCallback() {
 
   return <p>Connecting wallet…</p>;
 }
-```
-
----
-
-### Example: React Router
-
-```tsx
-function AlbedoCallback() {
-  useEffect(() => {
-    const params = Object.fromEntries(
-      new URLSearchParams(window.location.search)
-    );
-
-    if (window.opener) {
-      window.opener.postMessage(
-        { type: 'ALBEDO_RESULT', payload: params },
-        window.location.origin
-      );
-    }
-
-    window.close();
-  }, []);
-
-  return <p>Connecting wallet…</p>;
-}
-```
-
----
-
-## 🔗 Connecting Explicitly to Albedo
-
-```tsx
-import { WalletType, useWallet } from 'stellar-wallet-kit';
-
-const { connect } = useWallet();
-
-await connect(WalletType.ALBEDO);
 ```
 
 ---
@@ -267,11 +230,12 @@ const usdc = getAssetBalance(account.balances, 'USDC', issuer);
 
 ## 🎯 `useWallet()` API
 
-```tsx
+```ts
 const {
   account,
   isConnected,
   isConnecting,
+  connectingWallet,
   error,
   network,
   selectedWallet,
@@ -300,27 +264,27 @@ supports = {
 }
 ```
 
-Useful for conditional UI and safer flows.
+Use this to:
 
----
-
-## 📱 Next.js App Router Setup
-
-```tsx
-'use client';
-
-import { WalletProvider } from 'stellar-wallet-kit';
-
-export function Providers({ children }) {
-  return <WalletProvider>{children}</WalletProvider>;
-}
-```
+* Disable unsupported actions
+* Adjust UX per wallet
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Albedo popup opens but doesn’t connect
+### WalletConnect QR stuck on “Connecting…”
+
+✔ Mobile wallet not approved
+✔ App not foregrounded on phone
+✔ Session rejected in wallet
+
+### QR hidden behind loader
+
+✔ **Handled automatically**
+WalletConnect never blocks UI
+
+### Albedo opens but doesn’t connect
 
 ✔ Missing callback route
 ✔ Callback URL mismatch
@@ -328,31 +292,31 @@ export function Providers({ children }) {
 
 ### Freighter not detected
 
-✔ Ensure extension is installed & enabled
+✔ Extension not installed / disabled
 
 ---
 
 ## 🗺️ Roadmap
 
-* [x] Freighter support
-* [x] Albedo support
-* [x] Balance utilities
+* [x] Freighter
+* [x] Albedo
+* [x] WalletConnect
+* [x] LOBSTR
 * [ ] xBull
 * [ ] Rabet
-* [ ] WalletConnect
-* [ ] Mobile deep-link wallets
+* [ ] Multi-account support
 * [ ] Hardware wallets
 
 ---
 
 ## 📄 License
 
-MIT © Tushar Pamnani
+MIT © **Tushar Pamnani**
 
 ---
 
 ## 🌟 Show Your Support
 
-If this project helps you, please ⭐️ it on GitHub.
+If this SDK saved you pain — ⭐️ it on GitHub.
 
 Built with ❤️ for the Stellar ecosystem.

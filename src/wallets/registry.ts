@@ -31,4 +31,18 @@ export const WALLET_REGISTRY: WalletInfo[] = [
       authEntrySigning: true,
     },
   },
+  {
+  id: WalletType.LOBSTR,
+  name: 'LOBSTR',
+  icon: 'https://lobstr.co/favicon.ico',
+  description: 'Connect using LOBSTR mobile wallet',
+  installed: true,
+  kind: 'web',
+  capabilities: {
+    silentReconnect: false,
+    networkDetection: false,
+    authEntrySigning: false,
+  },
+}
+
 ];

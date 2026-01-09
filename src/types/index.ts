@@ -1,6 +1,8 @@
 export enum WalletType {
   FREIGHTER = "freighter",
   ALBEDO = "albedo",
+   WALLETCONNECT = 'walletconnect',
+  LOBSTR = 'lobstr', // UI alias
   // XBULL = 'xbull',
 }
 
@@ -102,6 +104,8 @@ export interface StellarWalletKitConfig {
   theme?: WalletTheme;
   appName?: string;
   appIcon?: string;
+
+  adapters?: Partial<Record<WalletType, WalletAdapter>>;
 }
 
 export interface WalletTheme {
@@ -152,6 +156,13 @@ export interface WalletContextValue {
     networkDetection: boolean;
     authEntrySigning: boolean;
   };
+  connectingWallet: WalletType | null;
 }
 
 export type WalletKind = "extension" | "web";
+
+export interface WalletCapabilities {
+  silentReconnect: boolean;
+  networkDetection: boolean;
+  authEntrySigning: boolean;
+}

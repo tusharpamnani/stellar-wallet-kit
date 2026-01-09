@@ -16,14 +16,22 @@ export {
   groupBalancesByType,
 } from './utils/balanceUtils';
 
+// Adapter factory (IMPORTANT)
+export { createWalletAdapters } from './wallets/createWalletAdapters';
+
+// Adapters (advanced / custom usage)
+export { FreighterAdapter } from './adapters/FreighterAdapter';
+export { WalletConnectAdapter } from './adapters/WalletConnectAdapter';
+
 // Types
 export type {
   WalletAccount,
   WalletInfo,
+  WalletAdapter,
+  WalletCapabilities,
   ConnectWalletResponse,
   SignTransactionResponse,
   SignAuthEntryResponse,
-  WalletAdapter,
   SignTransactionOptions,
   SignAuthEntryOptions,
   StellarWalletKitConfig,
@@ -31,10 +39,8 @@ export type {
   ModalProps,
   WalletContextValue,
   AccountBalance,
+  WalletKind,
 } from './types';
 
-// Adapters (if users want to create custom adapters)
-export { FreighterAdapter } from './adapters/FreighterAdapter';
-
-// Re-export enums
+// Enums
 export { WalletType, NetworkType } from './types';
