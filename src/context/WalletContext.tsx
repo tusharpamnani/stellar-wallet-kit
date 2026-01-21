@@ -86,7 +86,7 @@ const walletMetadata: Record<WalletType, Omit<WalletInfo, "installed">> = {
   [WalletType.WALLETCONNECT]: {
     id: WalletType.WALLETCONNECT,
     name: "WalletConnect",
-    icon: "https://walletconnect.com/walletconnect-logo.png",
+    icon: "https://docs.walletconnect.network/images/walletconnect-home.svg",
     description: "Connect mobile wallets via WalletConnect",
     kind: "web",
     capabilities: {

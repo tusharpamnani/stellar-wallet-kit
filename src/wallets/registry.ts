@@ -1,17 +1,19 @@
-import { WalletType } from '../types';
-import type { WalletInfo } from '../types';
+import { WalletType } from "../types";
+import type { WalletInfo } from "../types";
 
-import freighterIcon from '../assets/freighter.svg';
-import albedoIcon from '../assets/albedo.svg';
+import freighterIcon from "../public/assets/freighter.svg";
+import albedoIcon from "../public/assets/albedo.svg";
+import walletconnectIcon from "../public/assets/walletconnect.svg";
+
 
 export const WALLET_REGISTRY: WalletInfo[] = [
   {
     id: WalletType.FREIGHTER,
-    name: 'Freighter',
+    name: "Freighter",
     icon: freighterIcon,
     installed: false,
-    downloadUrl: 'https://www.freighter.app/',
-    kind: 'extension',
+    downloadUrl: "https://www.freighter.app/",
+    kind: "extension",
     capabilities: {
       silentReconnect: true,
       networkDetection: true,
@@ -20,11 +22,11 @@ export const WALLET_REGISTRY: WalletInfo[] = [
   },
   {
     id: WalletType.ALBEDO,
-    name: 'Albedo',
+    name: "Albedo",
     icon: albedoIcon,
-    description: 'Web-based Stellar wallet',
+    description: "Web-based Stellar wallet",
     installed: true,
-    kind: 'web',
+    kind: "web",
     capabilities: {
       silentReconnect: false,
       networkDetection: false,
@@ -32,17 +34,29 @@ export const WALLET_REGISTRY: WalletInfo[] = [
     },
   },
   {
-  id: WalletType.LOBSTR,
-  name: 'LOBSTR',
-  icon: 'https://lobstr.co/favicon.ico',
-  description: 'Connect using LOBSTR mobile wallet',
-  installed: true,
-  kind: 'web',
-  capabilities: {
-    silentReconnect: false,
-    networkDetection: false,
-    authEntrySigning: false,
+    id: WalletType.LOBSTR,
+    name: "LOBSTR",
+    icon: "https://lobstr.co/favicon.ico",
+    description: "Connect using LOBSTR mobile wallet",
+    installed: true,
+    kind: "web",
+    capabilities: {
+      silentReconnect: false,
+      networkDetection: false,
+      authEntrySigning: false,
+    },
   },
-}
-
+  {
+    id: WalletType.WALLETCONNECT,
+    name: "WalletConnect",
+    icon: walletconnectIcon,
+    description: "Connect using any WalletConnect compatible mobile wallet",
+    installed: true,
+    kind: "web",
+    capabilities: {
+      silentReconnect: false,
+      networkDetection: false,
+      authEntrySigning: false,
+    },
+  },
 ];

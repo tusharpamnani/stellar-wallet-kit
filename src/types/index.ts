@@ -1,7 +1,7 @@
 export enum WalletType {
   FREIGHTER = "freighter",
   ALBEDO = "albedo",
-   WALLETCONNECT = 'walletconnect',
+  WALLETCONNECT = 'walletconnect',
   LOBSTR = 'lobstr', // UI alias
   // XBULL = 'xbull',
 }
