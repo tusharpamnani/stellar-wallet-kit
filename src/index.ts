@@ -44,3 +44,12 @@ export type {
 
 // Enums
 export { WalletType, NetworkType } from './types';
+
+
+// Albedo utility functions
+export {
+  openAlbedoPopup,
+  waitForAlbedoResult,
+  handleAlbedoCallback,
+  waitForAlbedoPopup,
+} from './utils/albedoCallback';

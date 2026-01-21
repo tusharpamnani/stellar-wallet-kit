@@ -1,3 +1,5 @@
+"use client";
+import { useEffect } from 'react';
 import { handleAlbedoCallback } from 'stellar-wallet-kit';
 
 export default function AlbedoCallback() {
