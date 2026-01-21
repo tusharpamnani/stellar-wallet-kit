@@ -1,6 +1,6 @@
 {
   "name": "stellar-wallet-kit",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "A comprehensive wallet connection kit for Stellar dApps",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
